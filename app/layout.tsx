@@ -7,7 +7,7 @@ import Navbar from './navbar/page'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'QuVolt Ver 1-0-SM',
+  title: 'QryptShield Ver 0.1.0',
   description: 'A Quantum Vulnerability Analysis Tool from Quniverse',
 }
 

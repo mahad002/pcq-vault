@@ -97,7 +97,7 @@ export default function Navbar() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://deal-share.s3.ap-south-1.amazonaws.com/1703492834906.png"
+                        src="/pngegg.png"
                         alt=""
                       />
                     </Menu.Button>

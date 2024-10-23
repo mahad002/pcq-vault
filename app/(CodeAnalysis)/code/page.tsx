@@ -14,11 +14,11 @@ export default function CodeAnalysis() {
   return (
     <div className='bg-blue-200 text-gray-200 bg-url1 text-2xl h-screen'>
       <Navbar />
-      <h1 className='text-center text-2xl font-bold text-clip py-3 px-4 '>Search for quantum-vulnerable encryption, signature and hash algorithms or gain additional context on the threat landscape with ChecQ.</h1>
+      <h1 className='text-center text-2xl font-bold text-clip py-3 px-4 '>Search for quantum-vulnerable encryption, signature and hash algorithms or gain additional context on the threat landscape with QryptShield.</h1>
 
         <div className='grid grid-cols-2 bg-transparent'>
           <div className=' '>
-            <BinaryUpload/>
+            {/* <BinaryUpload/> */}
             <CodeUpload/>
           </div>
           <div>
