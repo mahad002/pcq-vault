@@ -2,24 +2,23 @@ import { Chart } from "react-google-charts";
 
 // Define the type for result
 interface ResultType {
-  score_k?: { [key: string]: number };
-  score_a?: { [key: string]: number };
-  score_e?: { [key: string]: number };
-  score_h?: { [key: string]: number };
+  score_k?: [number, number];
+  score_a?: [number, number];
+  score_e?: [number, number];
+  score_h?: [number, number];
 }
 
 export default function HorizontalBar({ result }: { result: ResultType }) {
-  if (!result) {
-    return null; // Return nothing if result is missing
+  if (!result || !result.score_k || !result.score_a || !result.score_e || !result.score_h) {
+    return null; // or some other fallback component
   }
 
-  const getScoreEntry = (scoreObj: { [key: string]: number } | undefined): [string, number, number] => {
-    if (!scoreObj || Object.keys(scoreObj).length === 0) {
-      return ["Unknown", 0, 0]; // Provide a fallback if scoreObj is missing or empty
+  const getScoreEntry = (score: [number, number] | undefined): [string, number, number] => {
+    if (!score) {
+      return ["Unknown", 0, 0]; // Provide a fallback if score is missing
     }
 
-    const entry = Object.entries(scoreObj)[0];
-    return [entry[0], entry[1], 0]; // Return the first key and its value, defaulting the third column to 0
+    return ["Score", score[0], score[1]]; // Return the score values with a label
   };
 
   const data = [
