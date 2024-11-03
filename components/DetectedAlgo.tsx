@@ -42,27 +42,26 @@ export default function ProtocolSupportTable({ result }: ProtocolSupportTablePro
 //   const data =
   const options = {
     title: "Detected Cryptography Primitive Analysis",
-    width: "100%",
-    height: "300",
+    width: 2000,
+    height: 300,
     backgroundColor: 'transparent',
     cssClassNames: {
       headerRow: "bg-gray-400 border px-10 py-2",
       tableCell: "border px-10 py-2 text-center",
       tableRow: "border px-100 py-2",
     },
-    
-    
   };
+
   return (
     <div className="overflow-x-auto">
       <Chart
         chartType="Table"
         width="100%"
-        height="400px"
+        height="100%"
         data={data}
         options={options}
       />
     </div>
-);
+  );
       
 }
