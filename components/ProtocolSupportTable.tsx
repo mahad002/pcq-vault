@@ -40,8 +40,8 @@ export default function ProtocolSupportTable({ result }: ProtocolSupportTablePro
     const options = {
         title: "Protocol Support",
         width: 500,
-        height: 500, // Change the height value to a number
-        backgroundColor: 'transparent',
+        height: 200, // Change the height value to a number
+        // backgroundColor: 'transparent',
         cssClassNames: {
             headerRow: "bg-gray-400 h-10",
             tableCell: "border border-black px-10 py-2 text-center",

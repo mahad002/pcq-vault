@@ -42,8 +42,8 @@ export default function ProtocolSupportTable({ result }: ProtocolSupportTablePro
 //   const data =
   const options = {
     title: "Detected Cryptography Primitive Analysis",
-    width: 1000,
-    height: 300,
+    width: "100%",
+    height: "300",
     backgroundColor: 'transparent',
     cssClassNames: {
       headerRow: "bg-gray-400 border px-10 py-2",
