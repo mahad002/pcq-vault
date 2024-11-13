@@ -53,7 +53,7 @@ export default function ProtocolSupportTable({ result }: ProtocolSupportTablePro
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto mb-8">
       <Chart
         chartType="Table"
         width="100%"
