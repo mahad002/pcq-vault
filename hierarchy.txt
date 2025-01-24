@@ -1,0 +1,85 @@
+/
+├── app/
+│   ├── (CodeAnalysis)/
+│   │   ├── code/
+│   │   │   ├── binary/
+│   │   │   │   └── page.tsx
+│   │   │   ├── codeupload/
+│   │   │   │   └── page.tsx
+│   │   │   ├── github/
+│   │   │   │   └── page.tsx
+│   │   │   ├── results/
+│   │   │   │   ├── calculateResults.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   ├── layout.tsx
+│   │   └── services/
+│   │       ├── scanner/
+│   │       │   ├── component.ts
+│   │       │   ├── node.ts
+│   │       │   └── python/
+│   │       │       ├── assignment.ts
+│   │       │       ├── class.ts
+│   │       │       ├── conditional.ts
+│   │       │       ├── decorated.ts
+│   │       │       ├── function.ts
+│   │       │       ├── import.ts
+│   │       │       ├── loops.ts
+│   │       │       ├── try_catch.ts
+│   │       │       └── with_statement.ts
+│   │       └── utils/
+│   │           ├── convert.ts
+│   │           ├── grading.ts
+│   │           ├── keywords.ts
+│   │           ├── lookup.ts
+│   │           ├── parserImp.ts
+│   │           └── testingfile.ts
+│   ├── (UrlAnalysis)/
+│   │   ├── url/
+│   │   │   ├── results/
+│   │   │   │   └── page.tsx
+│   │   │   ├── urlscan/
+│   │   │   │   └── page.tsx
+│   │   │   ├── layout.tsx
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│   ├── about/
+│   │   └── page.tsx
+│   ├── dashboard/
+│   │   └── page.tsx
+│   ├── navbar/
+│   │   └── page.tsx
+│   ├── profile/
+│   │   ├── LoginPage.tsx
+│   │   ├── RegistrationPage.tsx
+│   │   └── page.tsx
+│   ├── profileManagement/
+│   │   └── page.tsx
+│   ├── store/
+│   │   └── store.ts
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   ├── ui/
+│   │   ├── AnalysisItem.tsx
+│   │   ├── CardDetails.tsx
+│   │   ├── CipherTable.tsx
+│   │   ├── card.tsx
+│   │   ├── label.tsx
+│   │   └── switch.tsx
+│   ├── CodeSnippetItem.tsx
+│   ├── DetectedAlgo.tsx
+│   ├── DetectedAlgoCount.tsx
+│   ├── Donut.tsx
+│   ├── GitHubRepoItem.tsx
+│   ├── HorizontalBar.tsx
+│   ├── InputButtonUrl.tsx
+│   ├── ProtocolSupportTable.tsx
+│   ├── RiskGraph.tsx
+│   └── VerticalBar.tsx
+├── lib/
+│   └── utils.ts
+├── next.config.js
+└── tsconfig.json

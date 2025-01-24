@@ -7,9 +7,7 @@ import { useSelector } from "react-redux";
 import CalculateResults from './calculateResults';
 import CardDetails from '@/components/CardDetails';
 import Navbar from '@/app/navbar/page';
-import axios from 'axios';
 import { Suspense } from 'react';
-import { useEffect } from 'react';
 
 function ResultsContent() {
     const searchParams = useSearchParams();
@@ -22,34 +20,17 @@ function ResultsContent() {
     if (finalResultsParam) {
         // Use data from the search params if available
         finalResults = JSON.parse(decodeURIComponent(finalResultsParam));
-        console.log("finalResults from search params", finalResults);
+        console.log("Using finalResults from search params:", finalResults);
     } else {
         // Otherwise, fallback to Redux state
-        console.log("mappedResults", mappedResults);
+        console.log("Using mappedResults from Redux:", mappedResults);
         const lines = mappedResults.lines;
-        console.log("lines", lines);
+        console.log("Number of lines:", lines);
 
         // Calculate final results using the Redux data
-        finalResults = CalculateResults(mappedResults);  // Assuming CalculateResults is defined
-        console.log("finalResults from mapped results", finalResults);
+        finalResults = CalculateResults(mappedResults);
+        console.log("Calculated finalResults:", finalResults);
     }
-
-    // Function to store code data using axios
-    const storeCodeData = async (data: any) => {
-        try {
-            const response = await axios.post('/api/store_code_data', data);
-            console.log('store_code_data response:', response.data);
-        } catch (error) {
-            console.error('Error calling store_code_data API:', error);
-        }
-    };
-
-    // useEffect hook to call storeCodeData only when finalResults is ready
-    useEffect(() => {
-        if (finalResults) {
-            storeCodeData(finalResults);
-        }
-    }, [finalResults]);
 
     return (
         <div className='bg-blue-50'>

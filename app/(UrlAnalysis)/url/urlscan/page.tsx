@@ -4,11 +4,12 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from 'next/navigation';
 import store, { setMappedResults } from "@/app/store/store";
-import Image from "next/image";
+import { createAlert, logActivity } from '@/lib/alerts';
+import { Loader2 } from 'lucide-react';
 
 export default function UrlScan() {
     const [url, setUrl] = useState('');
-    const [result, setResult] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
     const router = useRouter();
 
@@ -18,12 +19,21 @@ export default function UrlScan() {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setIsLoading(true);
 
-        // Define both backend URLs
+        const email = localStorage.getItem('email');
+        if (!email) {
+            router.push('/profile');
+            return;
+        }
+
         let backendUrl1 = `${process.env.NEXT_PUBLIC_API_URL_1}/analyze_ciphers?url=${url}`;
         let backendUrl2 = `${process.env.NEXT_PUBLIC_API_URL_2}/analyze_ciphers?url=${url}`;
 
         try {
+            await createAlert(email, 'info', `Starting URL analysis for ${url}`);
+            await logActivity(email, 'url_analysis_started', { url });
+            
             console.log("Fetching data from: ", backendUrl1, "and", backendUrl2);
             
             // Fetch data from both APIs
@@ -34,16 +44,12 @@ export default function UrlScan() {
 
             // Check if both responses are okay
             if (!response1.ok || !response2.ok) {
-                console.error("Failed to fetch data from one or both APIs");
-                return;
+                throw new Error("Failed to fetch data from one or both APIs");
             }
 
             // Convert both responses to JSON
             const data1 = await response1.json();
             const data2 = await response2.json();
-
-            console.log("Fetching data from 1: ", data1);
-            console.log("Fetching data from 2: ", data2);
 
             // Combine the data from both APIs
             const combinedData = {
@@ -52,70 +58,83 @@ export default function UrlScan() {
                 url: url
             };
 
-            console.log("Combined data: ", combinedData);
-
             // Set the result and update the Redux store
-            setResult(combinedData);
             dispatch(setMappedResults(combinedData));
 
-            console.log("Store state: ", store.getState().results);
-
-            const email = localStorage.getItem('username');
-            if (email) {
+            // Store analysis results
+            const token = localStorage.getItem('token');
+            if (email && token) {
                 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-                const apiUrl = `${baseUrl}/api/users/url-analysis`; // Check URL existence
-                const token = localStorage.getItem('token');
-                const result = combinedData;
+                const apiUrl = `${baseUrl}/api/users/url-analysis`;
+                
+                try {
+                    const storeResponse = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ 
+                            email, 
+                            url, 
+                            result: combinedData 
+                        })
+                    });
 
-                // Proceed to store the analysis result since the URL doesn't exist
-                fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ email, url, result })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Url Scan analysis result added', data);
-                })
-                .catch(error => {
-                    console.error('Error adding url scan analysis result', error);
-                });
+                    if (!storeResponse.ok) {
+                        throw new Error('Failed to store URL analysis result');
+                    }
+
+                    const data = await storeResponse.json();
+                    console.log('URL analysis result stored:', data);
+                    await createAlert(email, 'success', `Successfully analyzed ${url}`);
+                    await logActivity(email, 'url_analysis_completed', { url, success: true });
+                } catch (error) {
+                    console.error('Error storing URL analysis result:', error);
+                    await createAlert(email, 'warning', 'Analysis completed but failed to save results');
+                    await logActivity(email, 'url_analysis_storage_failed', { url, error: error instanceof Error ? error.message : 'Unknown error' });
+                }
             }
 
-            // Redirect to results page
             router.push("/url/results");
-
         } catch (error) {
             console.error("An error occurred: ", error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+            await createAlert(email, 'error', `Failed to analyze ${url}: ${errorMessage}`);
+            await logActivity(email, 'url_analysis_failed', { url, error: errorMessage });
+        } finally {
+            setIsLoading(false);
         }
-
     };
-    
 
     return (
-        <div className='grid grid-rows-3 gap-y-4 bg-black bg-url1 h-screen '>
-            <h1 className="text-center text-2xl text-clip py-5 px-4 text-white font-bold">
-                Scan web applications for quantum vulnerabilities and gain insights into cryptographic weaknesses, including weak, strong, and recommended cipher suites. Additionally, compare the security of cipher suites in both pre-quantum and post-quantum contexts
-            </h1>
-            <div className='w-full justify-center gap-y-5 py-4'>
-                <div className='flex justify-center items-center'>
-                    <h1 className='text-center font-bold text-m text-white'>Scan your Website:</h1>
-                    <form className='flex space-x-2' onSubmit={handleSubmit}>
-                        <input
-                            id="url-input"
-                            type="text"
-                            value={url}
-                            onChange={handleUrlChange}
-                            className='border border-black rounded-md px-3 flex-shrink-0'
-                        />
-                        <button type="submit" className='bg-white hover:bg-gray-200 border border-black rounded-md px-2'>
-                            Analyze
-                        </button>
-                    </form>
-                </div>
+        <div className='w-full justify-center gap-y-5 py-4'>
+            <div className='flex justify-center items-center'>
+                <form className='flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 w-full max-w-2xl' onSubmit={handleSubmit}>
+                    <input
+                        id="url-input"
+                        type="text"
+                        value={url}
+                        onChange={handleUrlChange}
+                        placeholder="Enter website URL (e.g., https://example.com)"
+                        className='flex-1 px-4 py-2 rounded-lg border border-gray-600 bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                        disabled={isLoading}
+                    />
+                    <button 
+                        type="submit" 
+                        className='px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center min-w-[120px]'
+                        disabled={isLoading || !url.trim()}
+                    >
+                        {isLoading ? (
+                            <>
+                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                <span>Analyzing...</span>
+                            </>
+                        ) : (
+                            'Analyze'
+                        )}
+                    </button>
+                </form>
             </div>
         </div>
     );
