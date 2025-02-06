@@ -3,10 +3,17 @@
 import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./card";
 
+
 interface ProfileSectionProps {
+
   title: string;
+
   children: React.ReactNode;
+
+  icon: React.ReactNode;
+
 }
+
 
 export function ProfileSection({ title, children }: ProfileSectionProps) {
   return (

@@ -11,6 +11,18 @@ import { toast, ToastContainer } from 'react-toastify';
 import { User, Phone, Lock, Shield, Trash2, Mail, Bell, Eye, EyeOff, Loader2 } from 'lucide-react';
 import 'react-toastify/dist/ReactToastify.css';
 
+
+// interface ProfileSectionProps {
+
+//   title: string;
+
+//   children: React.ReactNode;
+
+//   icon: React.ReactNode;
+
+// }
+
+
 const AccountSettings: React.FC = () => {
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
