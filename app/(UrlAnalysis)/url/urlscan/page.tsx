@@ -22,44 +22,48 @@ export default function UrlScan() {
         setIsLoading(true);
 
         const email = localStorage.getItem('email');
-        if (!email) {
-            router.push('/profile');
-            return;
-        }
+        // if (!email) {
+        //     router.push('/profile');
+        //     return;
+        // }
 
         let backendUrl1 = `${process.env.NEXT_PUBLIC_API_URL_1}/analyze_ciphers?url=${url}`;
         let backendUrl2 = `${process.env.NEXT_PUBLIC_API_URL_2}/analyze_ciphers?url=${url}`;
 
         try {
-            await createAlert(email, 'info', `Starting URL analysis for ${url}`);
-            await logActivity(email, 'url_analysis_started', { url });
-            
-            console.log("Fetching data from: ", backendUrl1, "and", backendUrl2);
-            
-            // Fetch data from both APIs
-            const [response1, response2] = await Promise.all([
-                fetch(backendUrl1),
-                fetch(backendUrl2)
-            ]);
 
-            // Check if both responses are okay
-            if (!response1.ok || !response2.ok) {
-                throw new Error("Failed to fetch data from one or both APIs");
+            if (email) {
+                await createAlert(email, 'info', `Starting URL analysis for ${url}`);
+                await logActivity(email, 'url_analysis_started', { url });
             }
 
-            // Convert both responses to JSON
-            const data1 = await response1.json();
-            const data2 = await response2.json();
+            console.log("Fetching data from: ", backendUrl1, "and", backendUrl2);
+                
+                // Fetch data from both APIs
+                const [response1, response2] = await Promise.all([
+                    fetch(backendUrl1),
+                    fetch(backendUrl2)
+                ]);
 
-            // Combine the data from both APIs
-            const combinedData = {
-                ...data1,
-                ...data2,
-                url: url
-            };
+                // Check if both responses are okay
+                if (!response1.ok || !response2.ok) {
+                    throw new Error("Failed to fetch data from one or both APIs");
+                }
 
-            // Set the result and update the Redux store
-            dispatch(setMappedResults(combinedData));
+                // Convert both responses to JSON
+                const data1 = await response1.json();
+                const data2 = await response2.json();
+
+                // Combine the data from both APIs
+                const combinedData = {
+                    ...data1,
+                    ...data2,
+                    url: url
+                };
+
+                // Set the result and update the Redux store
+                dispatch(setMappedResults(combinedData));
+            
 
             // Store analysis results
             const token = localStorage.getItem('token');
@@ -100,8 +104,11 @@ export default function UrlScan() {
         } catch (error) {
             console.error("An error occurred: ", error);
             const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-            await createAlert(email, 'error', `Failed to analyze ${url}: ${errorMessage}`);
-            await logActivity(email, 'url_analysis_failed', { url, error: errorMessage });
+            if (email) {
+                await createAlert(email, 'error', `Failed to analyze ${url}: ${errorMessage}`);
+                await logActivity(email, 'url_analysis_failed', { url, error: errorMessage });
+            }
+            
         } finally {
             setIsLoading(false);
         }
