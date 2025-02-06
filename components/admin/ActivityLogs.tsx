@@ -62,11 +62,11 @@ export default function ActivityLogs() {
     return 'text-gray-400';
   };
 
-  const filteredLogs = logs.filter(log => 
-    log.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    log.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    log.path.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredLogs = logs.filter(log =>
+    (log.email && log.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (log.action && log.action.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (log.path && log.path.toLowerCase().includes(searchTerm.toLowerCase()))
+  );  
 
   if (isLoading) {
     return (

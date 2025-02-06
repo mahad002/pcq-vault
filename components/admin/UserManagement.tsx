@@ -73,8 +73,11 @@ export default function UserManagement() {
     try {
       const token = localStorage.getItem('token');
       const adminEmail = localStorage.getItem('email');
+
+      console.log("Email: ", email);
+      console.log("Token: ", token);
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/delete`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/users`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
